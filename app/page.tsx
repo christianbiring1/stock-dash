@@ -34,6 +34,9 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Raleway } from "next/font/google";
+import axios from "axios";
+
+import useStocks from "./hooks/useStocks";
 
 const raleway = Raleway({
   variable: "--font-raleway",
@@ -146,6 +149,15 @@ export default function StockDashboard() {
   const [sortField, setSortField] = useState<keyof StockData>("symbol");
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
+  const { stocksData } = useStocks();
+
+  console.log(stocksData);
+
+  // API Key: 76DJUJ5S0GJ7HWGJ : Alpha Vantage free tier
+
+  const URL =
+    "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=AAPL&apikey=76DJUJ5S0GJ7HWGJ";
+
   // Simulate API call
   useEffect(() => {
     const fetchStocks = async () => {
@@ -153,6 +165,9 @@ export default function StockDashboard() {
         setLoading(true);
         // Simulate API delay
         await new Promise((resolve) => setTimeout(resolve, 1500));
+        axios.get(URL).then((response) => {
+          console.log(response.data);
+        });
         setStocks(MOCK_STOCKS);
         setFilteredStocks(MOCK_STOCKS);
         setError(null);
